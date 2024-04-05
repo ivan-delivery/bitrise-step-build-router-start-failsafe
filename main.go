@@ -63,9 +63,10 @@ func main() {
 		}
 		if startedBuild.BuildSlug == "" {
 			log.Warnf("Build was not started. This could mean that manual build approval is enabled for this project and it's blocking this step from starting builds.")
+		} else {
+			buildSlugs = append(buildSlugs, startedBuild.BuildSlug)
+			log.Printf("- %s started (https://app.bitrise.io/build/%s)", startedBuild.TriggeredWorkflow, startedBuild.BuildSlug)
 		}
-		buildSlugs = append(buildSlugs, startedBuild.BuildSlug)
-		log.Printf("- %s started (https://app.bitrise.io/build/%s)", startedBuild.TriggeredWorkflow, startedBuild.BuildSlug)
 	}
 
 	if err := tools.ExportEnvironmentWithEnvman(envBuildSlugs, strings.Join(buildSlugs, "\n")); err != nil {
