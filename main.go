@@ -59,13 +59,14 @@ func main() {
 		wf = strings.TrimSpace(wf)
 		startedBuild, err := app.StartBuild(wf, build.OriginalBuildParams, cfg.BuildNumber, environments)
 		if err != nil {
-			failf("Failed to start build, error: %s", err)
+			log.Warnf("Failed to start build, error: %s", err)
 		}
 		if startedBuild.BuildSlug == "" {
-			failf("Build was not started. This could mean that manual build approval is enabled for this project and it's blocking this step from starting builds.")
+			log.Warnf("Build was not started. This could mean that manual build approval is enabled for this project and it's blocking this step from starting builds.")
+		} else {
+			buildSlugs = append(buildSlugs, startedBuild.BuildSlug)
+			log.Printf("- %s started (https://app.bitrise.io/build/%s)", startedBuild.TriggeredWorkflow, startedBuild.BuildSlug)
 		}
-		buildSlugs = append(buildSlugs, startedBuild.BuildSlug)
-		log.Printf("- %s started (https://app.bitrise.io/build/%s)", startedBuild.TriggeredWorkflow, startedBuild.BuildSlug)
 	}
 
 	if err := tools.ExportEnvironmentWithEnvman(envBuildSlugs, strings.Join(buildSlugs, "\n")); err != nil {

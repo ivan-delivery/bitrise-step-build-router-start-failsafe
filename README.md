@@ -1,6 +1,9 @@
 # Bitrise Start Build
 
 Starts the given workflows in the same app.
+The only difference from the original version, is that we do not abort the iteration of workflows, in case of an error.
+Main use-case is e.g. one of the workflows has a typo, or was removed, but is still referenced in this step. 
+So we want to fail only this workflow, and continue the execution of others  
 
 ## How to use this Step
 
